@@ -1,4 +1,6 @@
 
+#include <Keyboard.h>
+
 // 6 x 4 keyboard
 
 // columns
@@ -29,24 +31,40 @@ void setup() {
   pinMode(I_C, INPUT_PULLUP);
   pinMode(I_D, INPUT_PULLUP);
 
-  digitalWrite(O_1, HIGH);
-  digitalWrite(O_2, HIGH);
-  digitalWrite(O_3, HIGH);
-  digitalWrite(O_4, HIGH);
-  digitalWrite(O_5, LOW);
-  digitalWrite(O_6, HIGH);
+  Keyboard.begin();
 }
 
+int i = 0;
+
 void loop() {
-  // read the state of the pushbutton value:
-  const int buttonState = digitalRead(I_B);
+  // select column
+  digitalWrite(O_1, i == 0 ? LOW : HIGH);
+  digitalWrite(O_2, i == 1 ? LOW : HIGH);
+  digitalWrite(O_3, i == 2 ? LOW : HIGH);
+  digitalWrite(O_4, i == 3 ? LOW : HIGH);
+  digitalWrite(O_5, i == 4 ? LOW : HIGH);
+  digitalWrite(O_6, i == 5 ? LOW : HIGH);
+
+  // read keys (i.e. rows)
+  const int VAL_A = digitalRead(I_A);
+  const int VAL_B = digitalRead(I_B);
+  const int VAL_C = digitalRead(I_C);
+  const int VAL_D = digitalRead(I_D);
 
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if (buttonState == HIGH) {
-    // turn LED on:
-    digitalWrite(13, HIGH);
-  } else {
-    // turn LED off:
-    digitalWrite(13, LOW);
+  if (VAL_A == LOW) {
+    Keyboard.write('4');
   }
+  if (VAL_B == LOW) {
+    Keyboard.write('r');
+  }
+  if (VAL_C == LOW) {
+    Keyboard.write('f');
+  }
+  if (VAL_D == LOW) {
+    Keyboard.write('v');
+  }
+
+  i = (i + 1) % 6; 
+  delay(100);
 }
