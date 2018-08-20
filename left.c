@@ -36,6 +36,31 @@ void setup() {
 
 int i = 0;
 
+int S_A1 = HIGH;
+int S_A2 = HIGH;
+int S_A3 = HIGH;
+int S_A4 = HIGH;
+int S_A5 = HIGH;
+int S_A6 = HIGH;
+int S_B1 = HIGH;
+int S_B2 = HIGH;
+int S_B3 = HIGH;
+int S_B4 = HIGH;
+int S_B5 = HIGH;
+int S_B6 = HIGH;
+int S_C1 = HIGH;
+int S_C2 = HIGH;
+int S_C3 = HIGH;
+int S_C4 = HIGH;
+int S_C5 = HIGH;
+int S_C6 = HIGH;
+int S_D1 = HIGH;
+int S_D2 = HIGH;
+int S_D3 = HIGH;
+int S_D4 = HIGH;
+int S_D5 = HIGH;
+int S_D6 = HIGH;
+
 void loop() {
   // select column
   digitalWrite(O_1, i == 0 ? LOW : HIGH);
@@ -52,36 +77,60 @@ void loop() {
   const int VAL_D = digitalRead(I_D);
 
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if (i == 0 && VAL_A == LOW) { Keyboard.write('~'); }
-  if (i == 0 && VAL_B == LOW) { Keyboard.write('\t'); }
-  if (i == 0 && VAL_C == LOW) { Keyboard.write(' '); }
-  if (i == 0 && VAL_D == LOW) { Keyboard.write(' '); }
+  if (i == 0 && VAL_A == LOW) { if (S_A1 != LOW) Keyboard.press(KEY_ESC); S_A1 = LOW; }
+  else if (i == 0 && VAL_A == HIGH) { if (S_A1 != HIGH) Keyboard.release(KEY_ESC); S_A1 = HIGH; }
+  if (i == 0 && VAL_B == LOW) { if (S_B1 != LOW) Keyboard.press('\t'); S_B1 = LOW; }
+  else if (i == 0 && VAL_B == HIGH) { if (S_B1 != HIGH) Keyboard.release('\t'); S_B1 = HIGH; }
+  if (i == 0 && VAL_C == LOW) { if (S_C1 != LOW) Keyboard.press(KEY_LEFT_SHIFT); S_C1 = LOW; }
+  else if (i == 0 && VAL_C == HIGH) { if (S_C1 != HIGH) Keyboard.release(KEY_LEFT_SHIFT); S_C1 = HIGH; }
+  if (i == 0 && VAL_D == LOW) { if (S_D1 != LOW) Keyboard.press(KEY_LEFT_GUI); S_D1 = LOW; }
+  else if (i == 0 && VAL_D == HIGH) { if (S_D1 != HIGH) Keyboard.release(KEY_LEFT_GUI); S_D1 = HIGH; }
 
-  if (i == 1 && VAL_A == LOW) { Keyboard.write('1'); }
-  if (i == 1 && VAL_B == LOW) { Keyboard.write('q'); }
-  if (i == 1 && VAL_C == LOW) { Keyboard.write('a'); }
-  if (i == 1 && VAL_D == LOW) { Keyboard.write('z'); }
+  if (i == 1 && VAL_A == LOW) { if (S_A2 != LOW) Keyboard.press('1'); S_A2 = LOW; }
+  else if (i == 1 && VAL_A == HIGH) { if (S_A2 != HIGH) Keyboard.release('1'); S_A2 = HIGH; }
+  if (i == 1 && VAL_B == LOW) { if (S_B2 != LOW) Keyboard.press('q'); S_B2 = LOW; }
+  else if (i == 1 && VAL_B == HIGH) { if (S_B2 != HIGH) Keyboard.release('q'); S_B2 = HIGH; }
+  if (i == 1 && VAL_C == LOW) { if (S_C2 != LOW) Keyboard.press('a'); S_C2 = LOW; }
+  else if (i == 1 && VAL_C == HIGH) { if (S_C2 != HIGH) Keyboard.release('a'); S_C2 = HIGH; }
+  if (i == 1 && VAL_D == LOW) { if (S_D2 != LOW) Keyboard.press('z'); S_D2 = LOW; }
+  else if (i == 1 && VAL_D == HIGH) { if (S_D2 != HIGH) Keyboard.release('z'); S_D2 = HIGH; }
 
-  if (i == 2 && VAL_A == LOW) { Keyboard.write('2'); }
-  if (i == 2 && VAL_B == LOW) { Keyboard.write('w'); }
-  if (i == 2 && VAL_C == LOW) { Keyboard.write('s'); }
-  if (i == 2 && VAL_D == LOW) { Keyboard.write('x'); }
+  if (i == 2 && VAL_A == LOW) { if (S_A3 != LOW) Keyboard.press('2'); S_A3 = LOW; }
+  else if (i == 2 && VAL_A == HIGH) { if (S_A3 != HIGH) Keyboard.release('2'); S_A3 = HIGH; }
+  if (i == 2 && VAL_B == LOW) { if (S_B3 != LOW) Keyboard.press('w'); S_B3 = LOW; }
+  else if (i == 2 && VAL_B == HIGH) { if (S_B3 != HIGH) Keyboard.release('w'); S_B3 = HIGH; }
+  if (i == 2 && VAL_C == LOW) { if (S_C3 != LOW) Keyboard.press('s'); S_C3 = LOW; }
+  else if (i == 2 && VAL_C == HIGH) { if (S_C3 != HIGH) Keyboard.release('s'); S_C3 = HIGH; }
+  if (i == 2 && VAL_D == LOW) { if (S_D3 != LOW) Keyboard.press('x'); S_D3 = LOW; }
+  else if (i == 2 && VAL_D == HIGH) { if (S_D3 != HIGH) Keyboard.release('x'); S_D3 = HIGH; }
 
-  if (i == 3 && VAL_A == LOW) { Keyboard.write('3'); }
-  if (i == 3 && VAL_B == LOW) { Keyboard.write('e'); }
-  if (i == 3 && VAL_C == LOW) { Keyboard.write('d'); }
-  if (i == 3 && VAL_D == LOW) { Keyboard.write('c'); }
+  if (i == 3 && VAL_A == LOW) { if (S_A4 != LOW) Keyboard.press('3'); S_A4 = LOW; }
+  else if (i == 3 && VAL_A == HIGH) { if (S_A4 != HIGH) Keyboard.release('3'); S_A4 = HIGH; }
+  if (i == 3 && VAL_B == LOW) { if (S_B4 != LOW) Keyboard.press('e'); S_B4 = LOW; }
+  else if (i == 3 && VAL_B == HIGH) { if (S_B4 != HIGH) Keyboard.release('e'); S_B4 = HIGH; }
+  if (i == 3 && VAL_C == LOW) { if (S_C4 != LOW) Keyboard.press('d'); S_C4 = LOW; }
+  else if (i == 3 && VAL_C == HIGH) { if (S_C4 != HIGH) Keyboard.release('d'); S_C4 = HIGH; }
+  if (i == 3 && VAL_D == LOW) { if (S_D4 != LOW) Keyboard.press('c'); S_D4 = LOW; }
+  else if (i == 3 && VAL_D == HIGH) { if (S_D4 != HIGH) Keyboard.release('c'); S_D4 = HIGH; }
 
-  if (i == 4 && VAL_A == LOW) { Keyboard.write('4'); }
-  if (i == 4 && VAL_B == LOW) { Keyboard.write('r'); }
-  if (i == 4 && VAL_C == LOW) { Keyboard.write('f'); }
-  if (i == 4 && VAL_D == LOW) { Keyboard.write('v'); }
+  if (i == 4 && VAL_A == LOW) { if (S_A5 != LOW) Keyboard.press('4'); S_A5 = LOW; }
+  else if (i == 4 && VAL_A == HIGH) { if (S_A5 != HIGH) Keyboard.release('4'); S_A5 = HIGH; }
+  if (i == 4 && VAL_B == LOW) { if (S_B5 != LOW) Keyboard.press('r'); S_B5 = LOW; }
+  else if (i == 4 && VAL_B == HIGH) { if (S_B5 != HIGH) Keyboard.release('r'); S_B5 = HIGH; }
+  if (i == 4 && VAL_C == LOW) { if (S_C5 != LOW) Keyboard.press('f'); S_C5 = LOW; }
+  else if (i == 4 && VAL_C == HIGH) { if (S_C5 != HIGH) Keyboard.release('f'); S_C5 = HIGH; }
+  if (i == 4 && VAL_D == LOW) { if (S_D5 != LOW) Keyboard.press('v'); S_D5 = LOW; }
+  else if (i == 4 && VAL_D == HIGH) { if (S_D5 != HIGH) Keyboard.release('v'); S_D5 = HIGH; }
 
-  if (i == 5 && VAL_A == LOW) { Keyboard.write('5'); }
-  if (i == 5 && VAL_B == LOW) { Keyboard.write('t'); }
-  if (i == 5 && VAL_C == LOW) { Keyboard.write('g'); }
-  if (i == 5 && VAL_D == LOW) { Keyboard.write('b'); }
+  if (i == 5 && VAL_A == LOW) { if (S_A6 != LOW) Keyboard.press('5'); S_A6 = LOW; }
+  else if (i == 5 && VAL_A == HIGH) { if (S_A6 != HIGH) Keyboard.release('5'); S_A6 = HIGH; }
+  if (i == 5 && VAL_B == LOW) { if (S_B6 != LOW) Keyboard.press('t'); S_B6 = LOW; }
+  else if (i == 5 && VAL_B == HIGH) { if (S_B6 != HIGH) Keyboard.release('t'); S_B6 = HIGH; }
+  if (i == 5 && VAL_C == LOW) { if (S_C6 != LOW) Keyboard.press('g'); S_C6 = LOW; }
+  else if (i == 5 && VAL_C == HIGH) { if (S_C6 != HIGH) Keyboard.release('g'); S_C6 = HIGH; }
+  if (i == 5 && VAL_D == LOW) { if (S_D6 != LOW) Keyboard.press('b'); S_D6 = LOW; }
+  else if (i == 5 && VAL_D == HIGH) { if (S_D6 != HIGH) Keyboard.release('b'); S_D6 = HIGH; }
 
   i = (i + 1) % 6; 
-  delay(100);
+  delay(10);
 }
