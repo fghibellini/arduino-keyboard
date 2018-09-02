@@ -3,6 +3,9 @@
 
 // 6 x 5 keyboard
 
+const unsigned char PROT_PRESSED = 0xaa;
+const unsigned char PROT_RELEASED = 0x55;
+
 // columns
 const int O_1 = A4;
 const int O_2 = A1;
@@ -21,7 +24,7 @@ const int I_E = 9;
 int i = 0;
 
 const int KEY_COUNT = 27;
-char syncBuffer[KEY_COUNT] = { LOW };
+unsigned char syncBuffer[KEY_COUNT] = { PROT_RELEASED };
 
 void onReq() {
   Wire.write(syncBuffer, KEY_COUNT);
@@ -64,65 +67,65 @@ void loop() {
 
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
  
-  if (i == 0 && VAL_A == LOW && syncBuffer[0] != 0xaa) { syncBuffer[0] = 0xaa; }
-  else if (i == 0 && VAL_A == HIGH && syncBuffer[0] != 0x55) { syncBuffer[0] = 0x55; }
-  if (i == 0 && VAL_B == LOW && syncBuffer[1] != 0xaa) { syncBuffer[1] = 0xaa; }
-  else if (i == 0 && VAL_B == HIGH && syncBuffer[1] != 0x55) { syncBuffer[1] = 0x55; }
-  if (i == 0 && VAL_C == LOW && syncBuffer[2] != 0xaa) { syncBuffer[2] = 0xaa; }
-  else if (i == 0 && VAL_C == HIGH && syncBuffer[2] != 0x55) { syncBuffer[2] = 0x55; }
-  if (i == 0 && VAL_D == LOW && syncBuffer[3] != 0xaa) { syncBuffer[3] = 0xaa; }
-  else if (i == 0 && VAL_D == HIGH && syncBuffer[3] != 0x55) { syncBuffer[3] = 0x55; }
-  if (i == 0 && VAL_E == LOW && syncBuffer[4] != 0xaa) { syncBuffer[4] = 0xaa; }
-  else if (i == 0 && VAL_E == HIGH && syncBuffer[4] != 0x55) { syncBuffer[4] = 0x55; }
+  if (i == 0 && VAL_A == LOW && syncBuffer[0] != PROT_PRESSED) { syncBuffer[0] = PROT_PRESSED; }
+  else if (i == 0 && VAL_A == HIGH && syncBuffer[0] != PROT_RELEASED) { syncBuffer[0] = PROT_RELEASED; }
+  if (i == 0 && VAL_B == LOW && syncBuffer[1] != PROT_PRESSED) { syncBuffer[1] = PROT_PRESSED; }
+  else if (i == 0 && VAL_B == HIGH && syncBuffer[1] != PROT_RELEASED) { syncBuffer[1] = PROT_RELEASED; }
+  if (i == 0 && VAL_C == LOW && syncBuffer[2] != PROT_PRESSED) { syncBuffer[2] = PROT_PRESSED; }
+  else if (i == 0 && VAL_C == HIGH && syncBuffer[2] != PROT_RELEASED) { syncBuffer[2] = PROT_RELEASED; }
+  if (i == 0 && VAL_D == LOW && syncBuffer[3] != PROT_PRESSED) { syncBuffer[3] = PROT_PRESSED; }
+  else if (i == 0 && VAL_D == HIGH && syncBuffer[3] != PROT_RELEASED) { syncBuffer[3] = PROT_RELEASED; }
+  if (i == 0 && VAL_E == LOW && syncBuffer[4] != PROT_PRESSED) { syncBuffer[4] = PROT_PRESSED; }
+  else if (i == 0 && VAL_E == HIGH && syncBuffer[4] != PROT_RELEASED) { syncBuffer[4] = PROT_RELEASED; }
 
-  if (i == 1 && VAL_A == LOW && syncBuffer[5] != 0xaa) { syncBuffer[5] = 0xaa; }
-  else if (i == 1 && VAL_A == HIGH && syncBuffer[5] != 0x55) { syncBuffer[5] = 0x55; }
-  if (i == 1 && VAL_B == LOW && syncBuffer[6] != 0xaa) { syncBuffer[6] = 0xaa; }
-  else if (i == 1 && VAL_B == HIGH && syncBuffer[6] != 0x55) { syncBuffer[6] = 0x55; }
-  if (i == 1 && VAL_C == LOW && syncBuffer[7] != 0xaa) { syncBuffer[7] = 0xaa; }
-  else if (i == 1 && VAL_C == HIGH && syncBuffer[7] != 0x55) { syncBuffer[7] = 0x55; }
-  if (i == 1 && VAL_D == LOW && syncBuffer[8] != 0xaa) { syncBuffer[8] = 0xaa; }
-  else if (i == 1 && VAL_D == HIGH && syncBuffer[8] != 0x55) { syncBuffer[8] = 0x55; }
-  if (i == 1 && VAL_E == LOW && syncBuffer[9] != 0xaa) { syncBuffer[9] = 0xaa; }
-  else if (i == 1 && VAL_E == HIGH && syncBuffer[9] != 0x55) { syncBuffer[9] = 0x55; }
+  if (i == 1 && VAL_A == LOW && syncBuffer[5] != PROT_PRESSED) { syncBuffer[5] = PROT_PRESSED; }
+  else if (i == 1 && VAL_A == HIGH && syncBuffer[5] != PROT_RELEASED) { syncBuffer[5] = PROT_RELEASED; }
+  if (i == 1 && VAL_B == LOW && syncBuffer[6] != PROT_PRESSED) { syncBuffer[6] = PROT_PRESSED; }
+  else if (i == 1 && VAL_B == HIGH && syncBuffer[6] != PROT_RELEASED) { syncBuffer[6] = PROT_RELEASED; }
+  if (i == 1 && VAL_C == LOW && syncBuffer[7] != PROT_PRESSED) { syncBuffer[7] = PROT_PRESSED; }
+  else if (i == 1 && VAL_C == HIGH && syncBuffer[7] != PROT_RELEASED) { syncBuffer[7] = PROT_RELEASED; }
+  if (i == 1 && VAL_D == LOW && syncBuffer[8] != PROT_PRESSED) { syncBuffer[8] = PROT_PRESSED; }
+  else if (i == 1 && VAL_D == HIGH && syncBuffer[8] != PROT_RELEASED) { syncBuffer[8] = PROT_RELEASED; }
+  if (i == 1 && VAL_E == LOW && syncBuffer[9] != PROT_PRESSED) { syncBuffer[9] = PROT_PRESSED; }
+  else if (i == 1 && VAL_E == HIGH && syncBuffer[9] != PROT_RELEASED) { syncBuffer[9] = PROT_RELEASED; }
 
-  if (i == 2 && VAL_A == LOW && syncBuffer[10] != 0xaa) { syncBuffer[10] = 0xaa; }
-  else if (i == 2 && VAL_A == HIGH && syncBuffer[10] != 0x55) { syncBuffer[10] = 0x55; }
-  if (i == 2 && VAL_B == LOW && syncBuffer[11] != 0xaa) { syncBuffer[11] = 0xaa; }
-  else if (i == 2 && VAL_B == HIGH && syncBuffer[11] != 0x55) { syncBuffer[11] = 0x55; }
-  if (i == 2 && VAL_C == LOW && syncBuffer[12] != 0xaa) { syncBuffer[12] = 0xaa; }
-  else if (i == 2 && VAL_C == HIGH && syncBuffer[12] != 0x55) { syncBuffer[12] = 0x55; }
-  if (i == 2 && VAL_D == LOW && syncBuffer[13] != 0xaa) { syncBuffer[13] = 0xaa; }
-  else if (i == 2 && VAL_D == HIGH && syncBuffer[13] != 0x55) { syncBuffer[13] = 0x55; }
-  if (i == 2 && VAL_E == LOW && syncBuffer[14] != 0xaa) { syncBuffer[14] = 0xaa; }
-  else if (i == 2 && VAL_E == HIGH && syncBuffer[14] != 0x55) { syncBuffer[14] = 0x55; }
+  if (i == 2 && VAL_A == LOW && syncBuffer[10] != PROT_PRESSED) { syncBuffer[10] = PROT_PRESSED; }
+  else if (i == 2 && VAL_A == HIGH && syncBuffer[10] != PROT_RELEASED) { syncBuffer[10] = PROT_RELEASED; }
+  if (i == 2 && VAL_B == LOW && syncBuffer[11] != PROT_PRESSED) { syncBuffer[11] = PROT_PRESSED; }
+  else if (i == 2 && VAL_B == HIGH && syncBuffer[11] != PROT_RELEASED) { syncBuffer[11] = PROT_RELEASED; }
+  if (i == 2 && VAL_C == LOW && syncBuffer[12] != PROT_PRESSED) { syncBuffer[12] = PROT_PRESSED; }
+  else if (i == 2 && VAL_C == HIGH && syncBuffer[12] != PROT_RELEASED) { syncBuffer[12] = PROT_RELEASED; }
+  if (i == 2 && VAL_D == LOW && syncBuffer[13] != PROT_PRESSED) { syncBuffer[13] = PROT_PRESSED; }
+  else if (i == 2 && VAL_D == HIGH && syncBuffer[13] != PROT_RELEASED) { syncBuffer[13] = PROT_RELEASED; }
+  if (i == 2 && VAL_E == LOW && syncBuffer[14] != PROT_PRESSED) { syncBuffer[14] = PROT_PRESSED; }
+  else if (i == 2 && VAL_E == HIGH && syncBuffer[14] != PROT_RELEASED) { syncBuffer[14] = PROT_RELEASED; }
 
-  if (i == 3 && VAL_A == LOW && syncBuffer[15] != 0xaa) { syncBuffer[15] = 0xaa; }
-  else if (i == 3 && VAL_A == HIGH && syncBuffer[15] != 0x55) { syncBuffer[15] = 0x55; }
-  if (i == 3 && VAL_B == LOW && syncBuffer[16] != 0xaa) { syncBuffer[16] = 0xaa; }
-  else if (i == 3 && VAL_B == HIGH && syncBuffer[16] != 0x55) { syncBuffer[16] = 0x55; }
-  if (i == 3 && VAL_C == LOW && syncBuffer[17] != 0xaa) { syncBuffer[17] = 0xaa; }
-  else if (i == 3 && VAL_C == HIGH && syncBuffer[17] != 0x55) { syncBuffer[17] = 0x55; }
-  if (i == 3 && VAL_D == LOW && syncBuffer[18] != 0xaa) { syncBuffer[18] = 0xaa; }
-  else if (i == 3 && VAL_D == HIGH && syncBuffer[18] != 0x55) { syncBuffer[18] = 0x55; }
+  if (i == 3 && VAL_A == LOW && syncBuffer[15] != PROT_PRESSED) { syncBuffer[15] = PROT_PRESSED; }
+  else if (i == 3 && VAL_A == HIGH && syncBuffer[15] != PROT_RELEASED) { syncBuffer[15] = PROT_RELEASED; }
+  if (i == 3 && VAL_B == LOW && syncBuffer[16] != PROT_PRESSED) { syncBuffer[16] = PROT_PRESSED; }
+  else if (i == 3 && VAL_B == HIGH && syncBuffer[16] != PROT_RELEASED) { syncBuffer[16] = PROT_RELEASED; }
+  if (i == 3 && VAL_C == LOW && syncBuffer[17] != PROT_PRESSED) { syncBuffer[17] = PROT_PRESSED; }
+  else if (i == 3 && VAL_C == HIGH && syncBuffer[17] != PROT_RELEASED) { syncBuffer[17] = PROT_RELEASED; }
+  if (i == 3 && VAL_D == LOW && syncBuffer[18] != PROT_PRESSED) { syncBuffer[18] = PROT_PRESSED; }
+  else if (i == 3 && VAL_D == HIGH && syncBuffer[18] != PROT_RELEASED) { syncBuffer[18] = PROT_RELEASED; }
 
-  if (i == 4 && VAL_A == LOW && syncBuffer[19] != 0xaa) { syncBuffer[19] = 0xaa; }
-  else if (i == 4 && VAL_A == HIGH && syncBuffer[19] != 0x55) { syncBuffer[19] = 0x55; }
-  if (i == 4 && VAL_B == LOW && syncBuffer[20] != 0xaa) { syncBuffer[20] = 0xaa; }
-  else if (i == 4 && VAL_B == HIGH && syncBuffer[20] != 0x55) { syncBuffer[20] = 0x55; }
-  if (i == 4 && VAL_C == LOW && syncBuffer[21] != 0xaa) { syncBuffer[21] = 0xaa; }
-  else if (i == 4 && VAL_C == HIGH && syncBuffer[21] != 0x55) { syncBuffer[21] = 0x55; }
-  if (i == 4 && VAL_D == LOW && syncBuffer[22] != 0xaa) { syncBuffer[22] = 0xaa; }
-  else if (i == 4 && VAL_D == HIGH && syncBuffer[22] != 0x55) { syncBuffer[22] = 0x55; }
+  if (i == 4 && VAL_A == LOW && syncBuffer[19] != PROT_PRESSED) { syncBuffer[19] = PROT_PRESSED; }
+  else if (i == 4 && VAL_A == HIGH && syncBuffer[19] != PROT_RELEASED) { syncBuffer[19] = PROT_RELEASED; }
+  if (i == 4 && VAL_B == LOW && syncBuffer[20] != PROT_PRESSED) { syncBuffer[20] = PROT_PRESSED; }
+  else if (i == 4 && VAL_B == HIGH && syncBuffer[20] != PROT_RELEASED) { syncBuffer[20] = PROT_RELEASED; }
+  if (i == 4 && VAL_C == LOW && syncBuffer[21] != PROT_PRESSED) { syncBuffer[21] = PROT_PRESSED; }
+  else if (i == 4 && VAL_C == HIGH && syncBuffer[21] != PROT_RELEASED) { syncBuffer[21] = PROT_RELEASED; }
+  if (i == 4 && VAL_D == LOW && syncBuffer[22] != PROT_PRESSED) { syncBuffer[22] = PROT_PRESSED; }
+  else if (i == 4 && VAL_D == HIGH && syncBuffer[22] != PROT_RELEASED) { syncBuffer[22] = PROT_RELEASED; }
 
-  if (i == 5 && VAL_A == LOW && syncBuffer[23] != 0xaa) { syncBuffer[23] = 0xaa; }
-  else if (i == 5 && VAL_A == HIGH && syncBuffer[23] != 0x55) { syncBuffer[23] = 0x55; }
-  if (i == 5 && VAL_B == LOW && syncBuffer[24] != 0xaa) { syncBuffer[24] = 0xaa; }
-  else if (i == 5 && VAL_B == HIGH && syncBuffer[24] != 0x55) { syncBuffer[24] = 0x55; }
-  if (i == 5 && VAL_C == LOW && syncBuffer[25] != 0xaa) { syncBuffer[25] = 0xaa; }
-  else if (i == 5 && VAL_C == HIGH && syncBuffer[25] != 0x55) { syncBuffer[25] = 0x55; }
-  if (i == 5 && VAL_D == LOW && syncBuffer[26] != 0xaa) { syncBuffer[26] = 0xaa; }
-  else if (i == 5 && VAL_D == HIGH && syncBuffer[26] != 0x55) { syncBuffer[26] = 0x55; }
+  if (i == 5 && VAL_A == LOW && syncBuffer[23] != PROT_PRESSED) { syncBuffer[23] = PROT_PRESSED; }
+  else if (i == 5 && VAL_A == HIGH && syncBuffer[23] != PROT_RELEASED) { syncBuffer[23] = PROT_RELEASED; }
+  if (i == 5 && VAL_B == LOW && syncBuffer[24] != PROT_PRESSED) { syncBuffer[24] = PROT_PRESSED; }
+  else if (i == 5 && VAL_B == HIGH && syncBuffer[24] != PROT_RELEASED) { syncBuffer[24] = PROT_RELEASED; }
+  if (i == 5 && VAL_C == LOW && syncBuffer[25] != PROT_PRESSED) { syncBuffer[25] = PROT_PRESSED; }
+  else if (i == 5 && VAL_C == HIGH && syncBuffer[25] != PROT_RELEASED) { syncBuffer[25] = PROT_RELEASED; }
+  if (i == 5 && VAL_D == LOW && syncBuffer[26] != PROT_PRESSED) { syncBuffer[26] = PROT_PRESSED; }
+  else if (i == 5 && VAL_D == HIGH && syncBuffer[26] != PROT_RELEASED) { syncBuffer[26] = PROT_RELEASED; }
 
   i = (i + 1) % 6; 
 }

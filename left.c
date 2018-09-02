@@ -2,6 +2,11 @@
 #include <Wire.h>
 #include <Keyboard.h>
 
+const int SYNC_INTERVAL_MS = 30;
+
+const unsigned char PROT_PRESSED = 0xaa;
+const unsigned char PROT_RELEASED = 0x55;
+
 // 6 x 4 keyboard
 
 // columns
@@ -18,7 +23,7 @@ const int I_B = 10;
 const int I_C = 8;
 const int I_D = A3;
 
-unsigned long syncTime = 0;
+unsigned long last_sync_t = 0;
 int i = 0;
 
 int S_A1 = HIGH;
@@ -64,95 +69,39 @@ void setup() {
   Wire.begin();
 }
 
-char right_old[] = {
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH
-};
+unsigned char right_old[27] = { PROT_RELEASED };
+unsigned char right_current[27] = { PROT_RELEASED };
 
-char right_current[] = {
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH,
-  HIGH
-};
-
-char right_map[] = {
+int right_map[] = {
+  // col 1
   '6',
   'y',
   'h',
   'n',
   KEY_LEFT_SHIFT, //KEY_LEFT_CTRL,
-
+  // col 2
   '7',
   'u',
   'j',
   'm',
   ' ',
-
+  // col 3
   '8',
   'i',
   'k',
   ',',
   KEY_LEFT_GUI,
-
+  // col 4
   '9',
   'o',
   'l',
   '.',
-
+  // col 5
   '0',
   'p',
   ';',
   '/',
-
+  // col 6
   KEY_BACKSPACE,
   '[',
   '\'',
@@ -163,20 +112,20 @@ char right_map[] = {
 const int LEFT_KEY_COUNT = 27;
 
 void sync() {
-  syncTime = millis();
+  last_sync_t = millis();
   Wire.requestFrom(11, LEFT_KEY_COUNT);
   if (Wire.available() >= LEFT_KEY_COUNT) {
     for (int n = 0; n < LEFT_KEY_COUNT; n++) {
-      char val = Wire.read();
+      unsigned char val = Wire.read();
       right_current[n] = val;
     }
 
     for (int n = 0; n < LEFT_KEY_COUNT; n++) {
-      char old_val = right_old[n];
-      char val = right_current[n];
+      unsigned char old_val = right_old[n];
+      unsigned char val = right_current[n];
       if (old_val != val) {
-        if (val == LOW) { Keyboard.press(right_map[n]); }
-        else if (val == HIGH) { Keyboard.release(right_map[n]); }
+        if (val == PROT_PRESSED) { Keyboard.press(right_map[n]); }
+        else if (val == PROT_RELEASED) { Keyboard.release(right_map[n]); }
       }
       right_old[n] = val;
     }
@@ -253,7 +202,7 @@ void loop() {
   if (i == 5 && VAL_D == LOW && S_D6 != LOW) { Keyboard.press('b'); S_D6 = LOW; }
   else if (i == 5 && VAL_D == HIGH && S_D6 != HIGH) { Keyboard.release('b'); S_D6 = HIGH; }
 
-  if ((millis() - syncTime) >= 30) {
+  if ((millis() - last_sync_t) >= SYNC_INTERVAL_MS) {
     sync();
   }
 
