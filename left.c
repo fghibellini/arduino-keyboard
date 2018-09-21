@@ -152,10 +152,10 @@ void loop() {
   else if (i == 0 && VAL_A == HIGH && S_A1 != HIGH) { Keyboard.release(KEY_ESC); S_A1 = HIGH; }
   if (i == 0 && VAL_B == LOW && S_B1 != LOW) { Keyboard.press('\t'); S_B1 = LOW; }
   else if (i == 0 && VAL_B == HIGH && S_B1 != HIGH) { Keyboard.release('\t'); S_B1 = HIGH; }
-  if (i == 0 && VAL_C == LOW && S_C1 != LOW) { Keyboard.press(KEY_LEFT_SHIFT); S_C1 = LOW; }
-  else if (i == 0 && VAL_C == HIGH && S_C1 != HIGH) { Keyboard.release(KEY_LEFT_SHIFT); S_C1 = HIGH; }
-  if (i == 0 && VAL_D == LOW && S_D1 != LOW) { Keyboard.press(KEY_LEFT_GUI); S_D1 = LOW; }
-  else if (i == 0 && VAL_D == HIGH && S_D1 != HIGH) { Keyboard.release(KEY_LEFT_GUI); S_D1 = HIGH; }
+  if (i == 0 && VAL_C == LOW && S_C1 != LOW) { Keyboard.press('`'); S_C1 = LOW; }
+  else if (i == 0 && VAL_C == HIGH && S_C1 != HIGH) { Keyboard.release('`'); S_C1 = HIGH; }
+  if (i == 0 && VAL_D == LOW && S_D1 != LOW) { Keyboard.press(KEY_LEFT_CTRL); S_D1 = LOW; }
+  else if (i == 0 && VAL_D == HIGH && S_D1 != HIGH) { Keyboard.release(KEY_LEFT_CTRL); S_D1 = HIGH; }
 
   if (i == 1 && VAL_A == LOW && S_A2 != LOW) { Keyboard.press('1'); S_A2 = LOW; }
   else if (i == 1 && VAL_A == HIGH && S_A2 != HIGH) { Keyboard.release('1'); S_A2 = HIGH; }
