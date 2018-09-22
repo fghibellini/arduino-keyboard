@@ -1,14 +1,28 @@
 
+#include <pitchToFrequency.h>
+#include <pitchToNote.h>
+#include <frequencyToNote.h>
+#include <MIDIUSB.h>
+
 #include <Wire.h>
-#include <Keyboard.h>
 
+////////////
+// CONFIG //
+////////////
+
+// how often we poll state from other keyboard 
 const int SYNC_INTERVAL_MS = 30;
+const int RIGHT_DEV_ID = 11; // i2c right keyboard device id
 
+// values to represent key pressed/released
+// during communication between two keyboards
 const unsigned char PROT_PRESSED = 0xaa;
 const unsigned char PROT_RELEASED = 0x55;
 
-// 6 x 4 keyboard
+const int LEFT_KEY_COUNT = 24; // 4 x 6
+const int RIGHT_KEY_COUNT = 27; // 4 x 6 + 3 thumb keys
 
+// PINOUT ON LEFT KEYBOARD
 // columns
 const int O_1 = 11;
 const int O_2 = 9;
@@ -16,40 +30,19 @@ const int O_3 = A4;
 const int O_4 = A2;
 const int O_5 = A0;
 const int O_6 = A1;
-
 // rows
 const int I_A = 12;
 const int I_B = 10;
 const int I_C = 8;
 const int I_D = A3;
 
+///////////
+// STATE //
+///////////
+
 unsigned long last_sync_t = 0;
 int i = 0;
-
-int S_A1 = HIGH;
-int S_A2 = HIGH;
-int S_A3 = HIGH;
-int S_A4 = HIGH;
-int S_A5 = HIGH;
-int S_A6 = HIGH;
-int S_B1 = HIGH;
-int S_B2 = HIGH;
-int S_B3 = HIGH;
-int S_B4 = HIGH;
-int S_B5 = HIGH;
-int S_B6 = HIGH;
-int S_C1 = HIGH;
-int S_C2 = HIGH;
-int S_C3 = HIGH;
-int S_C4 = HIGH;
-int S_C5 = HIGH;
-int S_C6 = HIGH;
-int S_D1 = HIGH;
-int S_D2 = HIGH;
-int S_D3 = HIGH;
-int S_D4 = HIGH;
-int S_D5 = HIGH;
-int S_D6 = HIGH;
+unsigned char state[LEFT_KEY_COUNT + RIGHT_KEY_COUNT] = { HIGH }; // tracks which keys were pressed during the last scan
 
 void setup() {
   pinMode(O_1, OUTPUT);
@@ -64,72 +57,117 @@ void setup() {
   pinMode(I_C, INPUT_PULLUP);
   pinMode(I_D, INPUT_PULLUP);
 
-  Keyboard.begin();
-
   Wire.begin();
 }
 
-unsigned char right_old[27] = { PROT_RELEASED };
-unsigned char right_current[27] = { PROT_RELEASED };
 
-int right_map[] = {
-  // col 1
-  '6',
-  'y',
-  'h',
-  'n',
-  KEY_LEFT_SHIFT, //KEY_LEFT_CTRL,
-  // col 2
-  '7',
-  'u',
-  'j',
-  'm',
-  ' ',
-  // col 3
-  '8',
-  'i',
-  'k',
-  ',',
-  KEY_LEFT_GUI,
-  // col 4
-  '9',
-  'o',
-  'l',
-  '.',
-  // col 5
-  '0',
-  'p',
-  ';',
-  '/',
-  // col 6
-  KEY_BACKSPACE,
-  '[',
-  '\'',
-  KEY_RETURN
+int mappings[] = {
+
+  ///////////////
+  // LEFT HAND //
+  ///////////////
+ 
+  // left A
+  pitchC1,
+  pitchD1,
+  pitchE1,
+  pitchF1,
+  pitchG1,
+  pitchA1,
+  // left B
+  pitchC2,
+  pitchD2,
+  pitchE2,
+  pitchF2,
+  pitchG2,
+  pitchA2,
+  // left C
+  pitchC3,
+  pitchD3,
+  pitchE3,
+  pitchF3,
+  pitchG3,
+  pitchA3,
+  // left D
+  pitchC4,
+  pitchD4,
+  pitchE4,
+  pitchF4,
+  pitchG4,
+  pitchA4,
+
+  ////////////////
+  // RIGHT HAND //
+  ////////////////
+ 
+  // right A
+  // right A
+  pitchC1,
+  pitchD1,
+  pitchE1,
+  pitchF1,
+  pitchG1,
+  pitchA1,
+  // right B
+  pitchC2,
+  pitchD2,
+  pitchE2,
+  pitchF2,
+  pitchG2,
+  pitchA2,
+  // right C
+  pitchC3,
+  pitchD3,
+  pitchE3,
+  pitchF3,
+  pitchG3,
+  pitchA3,
+  // right D
+  pitchC4,
+  pitchD4,
+  pitchE4,
+  pitchF4,
+  pitchG4,
+  pitchA4,
+  // right E
+  pitchF4,
+  pitchG4,
+  pitchA4,
 };
 
 
-const int LEFT_KEY_COUNT = 27;
-
 void sync() {
+  unsigned char right_current[RIGHT_KEY_COUNT];
+
   last_sync_t = millis();
-  Wire.requestFrom(11, LEFT_KEY_COUNT);
-  if (Wire.available() >= LEFT_KEY_COUNT) {
-    for (int n = 0; n < LEFT_KEY_COUNT; n++) {
+  Wire.requestFrom(RIGHT_DEV_ID, RIGHT_KEY_COUNT);
+
+  if (Wire.available() >= RIGHT_KEY_COUNT) {
+
+    for (int n = 0; n < RIGHT_KEY_COUNT; n++) {
       unsigned char val = Wire.read();
       right_current[n] = val;
     }
 
-    for (int n = 0; n < LEFT_KEY_COUNT; n++) {
-      unsigned char old_val = right_old[n];
-      unsigned char val = right_current[n];
+    for (int n = 0; n < RIGHT_KEY_COUNT; n++) {
+      unsigned char old_val = state[LEFT_KEY_COUNT + n];
+      int val = (right_current[n] == PROT_PRESSED) ? LOW : HIGH;
       if (old_val != val) {
-        if (val == PROT_PRESSED) { Keyboard.press(right_map[n]); }
-        else if (val == PROT_RELEASED) { Keyboard.release(right_map[n]); }
+        if (val == LOW) { keyDown(LEFT_KEY_COUNT + n); }
+        else if (val == HIGH) { keyUp(LEFT_KEY_COUNT + n); }
       }
-      right_old[n] = val;
+      state[LEFT_KEY_COUNT + n] = val;
     }
+
   }
+}
+
+void keyUp(int i) {
+  noteOff(mappings[i]);
+}
+
+void keyDown(int i) {
+  noteOn(mappings[i]);
 }
 
 void loop() {
@@ -147,60 +185,71 @@ void loop() {
   const int VAL_C = digitalRead(I_C);
   const int VAL_D = digitalRead(I_D);
 
-  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if (i == 0 && VAL_A == LOW && S_A1 != LOW) { Keyboard.press(KEY_ESC); S_A1 = LOW; }
-  else if (i == 0 && VAL_A == HIGH && S_A1 != HIGH) { Keyboard.release(KEY_ESC); S_A1 = HIGH; }
-  if (i == 0 && VAL_B == LOW && S_B1 != LOW) { Keyboard.press('\t'); S_B1 = LOW; }
-  else if (i == 0 && VAL_B == HIGH && S_B1 != HIGH) { Keyboard.release('\t'); S_B1 = HIGH; }
-  if (i == 0 && VAL_C == LOW && S_C1 != LOW) { Keyboard.press('`'); S_C1 = LOW; }
-  else if (i == 0 && VAL_C == HIGH && S_C1 != HIGH) { Keyboard.release('`'); S_C1 = HIGH; }
-  if (i == 0 && VAL_D == LOW && S_D1 != LOW) { Keyboard.press(KEY_LEFT_CTRL); S_D1 = LOW; }
-  else if (i == 0 && VAL_D == HIGH && S_D1 != HIGH) { Keyboard.release(KEY_LEFT_CTRL); S_D1 = HIGH; }
+  if (i == 0) {
+    if (VAL_A == LOW && state[0] != LOW) { keyDown(0); state[0] = LOW; }
+    else if (VAL_A == HIGH && state[0] != HIGH) { keyUp(0); state[0] = HIGH; }
+    if (VAL_B == LOW && state[6] != LOW) { keyDown(6); state[6] = LOW; }
+    else if (VAL_B == HIGH && state[6] != HIGH) { keyUp(6); state[6] = HIGH; }
+    if (VAL_C == LOW && state[12] != LOW) { keyDown(12); state[12] = LOW; }
+    else if (VAL_C == HIGH && state[12] != HIGH) { keyUp(12); state[12] = HIGH; }
+    if (VAL_D == LOW && state[18] != LOW) { keyDown(18); state[18] = LOW; }
+    else if (VAL_D == HIGH && state[18] != HIGH) { keyUp(18); state[18] = HIGH; }
+  }
 
-  if (i == 1 && VAL_A == LOW && S_A2 != LOW) { Keyboard.press('1'); S_A2 = LOW; }
-  else if (i == 1 && VAL_A == HIGH && S_A2 != HIGH) { Keyboard.release('1'); S_A2 = HIGH; }
-  if (i == 1 && VAL_B == LOW && S_B2 != LOW) { Keyboard.press('q'); S_B2 = LOW; }
-  else if (i == 1 && VAL_B == HIGH && S_B2 != HIGH) { Keyboard.release('q'); S_B2 = HIGH; }
-  if (i == 1 && VAL_C == LOW && S_C2 != LOW) { Keyboard.press('a'); S_C2 = LOW; }
-  else if (i == 1 && VAL_C == HIGH && S_C2 != HIGH) { Keyboard.release('a'); S_C2 = HIGH; }
-  if (i == 1 && VAL_D == LOW && S_D2 != LOW) { Keyboard.press('z'); S_D2 = LOW; }
-  else if (i == 1 && VAL_D == HIGH && S_D2 != HIGH) { Keyboard.release('z'); S_D2 = HIGH; }
+  if (i == 1) {
+    if (VAL_A == LOW && state[1] != LOW) { keyDown(1); state[1] = LOW; }
+    else if (VAL_A == HIGH && state[1] != HIGH) { keyUp(1); state[1] = HIGH; }
+    if (VAL_B == LOW && state[7] != LOW) { keyDown(7); state[7] = LOW; }
+    else if (VAL_B == HIGH && state[7] != HIGH) { keyUp(7); state[7] = HIGH; }
+    if (VAL_C == LOW && state[13] != LOW) { keyDown(13); state[13] = LOW; }
+    else if (VAL_C == HIGH && state[13] != HIGH) { keyUp(13); state[13] = HIGH; }
+    if (VAL_D == LOW && state[19] != LOW) { keyDown(19); state[19] = LOW; }
+    else if (VAL_D == HIGH && state[19] != HIGH) { keyUp(19); state[19] = HIGH; }
+  }
 
-  if (i == 2 && VAL_A == LOW && S_A3 != LOW) { Keyboard.press('2'); S_A3 = LOW; }
-  else if (i == 2 && VAL_A == HIGH && S_A3 != HIGH) { Keyboard.release('2'); S_A3 = HIGH; }
-  if (i == 2 && VAL_B == LOW && S_B3 != LOW) { Keyboard.press('w'); S_B3 = LOW; }
-  else if (i == 2 && VAL_B == HIGH && S_B3 != HIGH) { Keyboard.release('w'); S_B3 = HIGH; }
-  if (i == 2 && VAL_C == LOW && S_C3 != LOW) { Keyboard.press('s'); S_C3 = LOW; }
-  else if (i == 2 && VAL_C == HIGH && S_C3 != HIGH) { Keyboard.release('s'); S_C3 = HIGH; }
-  if (i == 2 && VAL_D == LOW && S_D3 != LOW) { Keyboard.press('x'); S_D3 = LOW; }
-  else if (i == 2 && VAL_D == HIGH && S_D3 != HIGH) { Keyboard.release('x'); S_D3 = HIGH; }
+  if (i == 2) {
+    if (VAL_A == LOW && state[2] != LOW) { keyDown(2); state[2] = LOW; }
+    else if (VAL_A == HIGH && state[2] != HIGH) { keyUp(2); state[2] = HIGH; }
+    if (VAL_B == LOW && state[8] != LOW) { keyDown(8); state[8] = LOW; }
+    else if (VAL_B == HIGH && state[8] != HIGH) { keyUp(8); state[8] = HIGH; }
+    if (VAL_C == LOW && state[14] != LOW) { keyDown(14); state[14] = LOW; }
+    else if (VAL_C == HIGH && state[14] != HIGH) { keyUp(14); state[14] = HIGH; }
+    if (VAL_D == LOW && state[20] != LOW) { keyDown(20); state[20] = LOW; }
+    else if (VAL_D == HIGH && state[20] != HIGH) { keyUp(20); state[20] = HIGH; }
+  }
 
-  if (i == 3 && VAL_A == LOW && S_A4 != LOW) { Keyboard.press('3'); S_A4 = LOW; }
-  else if (i == 3 && VAL_A == HIGH && S_A4 != HIGH) { Keyboard.release('3'); S_A4 = HIGH; }
-  if (i == 3 && VAL_B == LOW && S_B4 != LOW) { Keyboard.press('e'); S_B4 = LOW; }
-  else if (i == 3 && VAL_B == HIGH && S_B4 != HIGH) { Keyboard.release('e'); S_B4 = HIGH; }
-  if (i == 3 && VAL_C == LOW && S_C4 != LOW) { Keyboard.press('d'); S_C4 = LOW; }
-  else if (i == 3 && VAL_C == HIGH && S_C4 != HIGH) { Keyboard.release('d'); S_C4 = HIGH; }
-  if (i == 3 && VAL_D == LOW && S_D4 != LOW) { Keyboard.press('c'); S_D4 = LOW; }
-  else if (i == 3 && VAL_D == HIGH && S_D4 != HIGH) { Keyboard.release('c'); S_D4 = HIGH; }
+  if (i == 3) {
+    if (VAL_A == LOW && state[3] != LOW) { keyDown(3); state[3] = LOW; }
+    else if (VAL_A == HIGH && state[3] != HIGH) { keyUp(3); state[3] = HIGH; }
+    if (VAL_B == LOW && state[9] != LOW) { keyDown(9); state[9] = LOW; }
+    else if (VAL_B == HIGH && state[9] != HIGH) { keyUp(9); state[9] = HIGH; }
+    if (VAL_C == LOW && state[15] != LOW) { keyDown(15); state[15] = LOW; }
+    else if (VAL_C == HIGH && state[15] != HIGH) { keyUp(15); state[15] = HIGH; }
+    if (VAL_D == LOW && state[21] != LOW) { keyDown(21); state[21] = LOW; }
+    else if (VAL_D == HIGH && state[21] != HIGH) { keyUp(21); state[21] = HIGH; }
+  }
 
-  if (i == 4 && VAL_A == LOW && S_A5 != LOW) { Keyboard.press('4'); S_A5 = LOW; }
-  else if (i == 4 && VAL_A == HIGH && S_A5 != HIGH) { Keyboard.release('4'); S_A5 = HIGH; }
-  if (i == 4 && VAL_B == LOW && S_B5 != LOW) { Keyboard.press('r'); S_B5 = LOW; }
-  else if (i == 4 && VAL_B == HIGH && S_B5 != HIGH) { Keyboard.release('r'); S_B5 = HIGH; }
-  if (i == 4 && VAL_C == LOW && S_C5 != LOW) { Keyboard.press('f'); S_C5 = LOW; }
-  else if (i == 4 && VAL_C == HIGH && S_C5 != HIGH) { Keyboard.release('f'); S_C5 = HIGH; }
-  if (i == 4 && VAL_D == LOW && S_D5 != LOW) { Keyboard.press('v'); S_D5 = LOW; }
-  else if (i == 4 && VAL_D == HIGH && S_D5 != HIGH) { Keyboard.release('v'); S_D5 = HIGH; }
+  if (i == 4) {
+    if (VAL_A == LOW && state[4] != LOW) { keyDown(4); state[4] = LOW; }
+    else if (VAL_A == HIGH && state[4] != HIGH) { keyUp(4); state[4] = HIGH; }
+    if (VAL_B == LOW && state[10] != LOW) { keyDown(10); state[10] = LOW; }
+    else if (VAL_B == HIGH && state[10] != HIGH) { keyUp(10); state[10] = HIGH; }
+    if (VAL_C == LOW && state[16] != LOW) { keyDown(16); state[16] = LOW; }
+    else if (VAL_C == HIGH && state[16] != HIGH) { keyUp(16); state[16] = HIGH; }
+    if (VAL_D == LOW && state[22] != LOW) { keyDown(22); state[22] = LOW; }
+    else if (VAL_D == HIGH && state[22] != HIGH) { keyUp(22); state[22] = HIGH; }
+  }
 
-  if (i == 5 && VAL_A == LOW && S_A6 != LOW) { Keyboard.press('5'); S_A6 = LOW; }
-  else if (i == 5 && VAL_A == HIGH && S_A6 != HIGH) { Keyboard.release('5'); S_A6 = HIGH; }
-  if (i == 5 && VAL_B == LOW && S_B6 != LOW) { Keyboard.press('t'); S_B6 = LOW; }
-  else if (i == 5 && VAL_B == HIGH && S_B6 != HIGH) { Keyboard.release('t'); S_B6 = HIGH; }
-  if (i == 5 && VAL_C == LOW && S_C6 != LOW) { Keyboard.press('g'); S_C6 = LOW; }
-  else if (i == 5 && VAL_C == HIGH && S_C6 != HIGH) { Keyboard.release('g'); S_C6 = HIGH; }
-  if (i == 5 && VAL_D == LOW && S_D6 != LOW) { Keyboard.press('b'); S_D6 = LOW; }
-  else if (i == 5 && VAL_D == HIGH && S_D6 != HIGH) { Keyboard.release('b'); S_D6 = HIGH; }
+  if (i == 5) {
+    if (VAL_A == LOW && state[5] != LOW) { keyDown(5); state[5] = LOW; }
+    else if (VAL_A == HIGH && state[5] != HIGH) { keyUp(5); state[5] = HIGH; }
+    if (VAL_B == LOW && state[11] != LOW) { keyDown(11); state[11] = LOW; }
+    else if (VAL_B == HIGH && state[11] != HIGH) { keyUp(11); state[11] = HIGH; }
+    if (VAL_C == LOW && state[17] != LOW) { keyDown(17); state[17] = LOW; }
+    else if (VAL_C == HIGH && state[17] != HIGH) { keyUp(17); state[17] = HIGH; }
+    if (VAL_D == LOW && state[23] != LOW) { keyDown(23); state[23] = LOW; }
+    else if (VAL_D == HIGH && state[23] != HIGH) { keyUp(23); state[23] = HIGH; }
+  }
 
   if ((millis() - last_sync_t) >= SYNC_INTERVAL_MS) {
     sync();
@@ -209,3 +258,18 @@ void loop() {
   i = (i + 1) % 6; 
   delay(10);
 }
+
+// MIDI SPECIFIC 
+
+void noteOn(unsigned char pitch) {
+  midiEventPacket_t noteOn = {0x09, 0x90 | 0, pitch, 120};
+  MidiUSB.sendMIDI(noteOn);
+  MidiUSB.flush();
+}
+
+void noteOff(unsigned char pitch) {
+  midiEventPacket_t noteOff = {0x08, 0x80 | 0, pitch, 0};
+  MidiUSB.sendMIDI(noteOff);
+  MidiUSB.flush();
+}
+
