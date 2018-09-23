@@ -68,33 +68,33 @@ int mappings[] = {
   ///////////////
  
   // left A
-  pitchC1,
-  pitchD1,
-  pitchE1,
-  pitchF1,
-  pitchG1,
-  pitchA1,
-  // left B
-  pitchC2,
-  pitchD2,
-  pitchE2,
-  pitchF2,
-  pitchG2,
-  pitchA2,
-  // left C
   pitchC3,
+  pitchD3b,
   pitchD3,
+  pitchE3b,
   pitchE3,
   pitchF3,
-  pitchG3,
-  pitchA3,
-  // left D
+  // left B
   pitchC4,
+  pitchD4b,
   pitchD4,
+  pitchE4b,
   pitchE4,
   pitchF4,
-  pitchG4,
-  pitchA4,
+  // left C
+  pitchC5,
+  pitchD5b,
+  pitchD5,
+  pitchE5b,
+  pitchE5,
+  pitchF5,
+  // left D
+  pitchC6,
+  pitchD6b,
+  pitchD6,
+  pitchE6b,
+  pitchE6,
+  pitchF6,
 
   ////////////////
   // RIGHT HAND //
@@ -102,33 +102,33 @@ int mappings[] = {
  
   // right A
   // right A
-  pitchC1,
-  pitchD1,
-  pitchE1,
-  pitchF1,
-  pitchG1,
-  pitchA1,
-  // right B
-  pitchC2,
-  pitchD2,
-  pitchE2,
-  pitchF2,
-  pitchG2,
-  pitchA2,
-  // right C
-  pitchC3,
-  pitchD3,
-  pitchE3,
-  pitchF3,
+  pitchG3b,
   pitchG3,
+  pitchA3b,
   pitchA3,
-  // right D
-  pitchC4,
-  pitchD4,
-  pitchE4,
-  pitchF4,
+  pitchB3b,
+  pitchB3,
+  // right B
+  pitchG4b,
   pitchG4,
+  pitchA4b,
   pitchA4,
+  pitchB4b,
+  pitchB4,
+  // right C
+  pitchG5b,
+  pitchG5,
+  pitchA5b,
+  pitchA5,
+  pitchB5b,
+  pitchB5,
+  // right D
+  pitchG6b,
+  pitchG6,
+  pitchA6b,
+  pitchA6,
+  pitchB6b,
+  pitchB6,
   // right E
   pitchF4,
   pitchG4,
